@@ -24,5 +24,19 @@ class ControllerVeterinaire {
             require (File::build_path(array("view", "view.php")));
         }
     }
+    
+     public static function create() {
+        $view = 'create';
+        $pagetitle = 'Rejoignez-nouus !';
+        require (File::build_path(array("view", "view.php")));  //redirige vers la vue
+    }
+    
+    public static function created($login, $nom, $prenom, $ville, $adresse, $mail, $tel) {
+        $view = 'created';
+        $pagetitle = 'Inscription réussie !';
+        $v = new ModelVeterinaire($login, $nom, $prenom, $ville, $tel, $adresse, $mail);
+        $v->save();
+        require (File::build_path(array("view", "view.php")));
+    }
 
 }

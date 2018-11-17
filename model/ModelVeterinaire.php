@@ -19,12 +19,12 @@ class ModelVeterinaire extends Model {
     public function __construct($login = NULL, $nom = NULL, $prenom = NULL, $ville = NULL, $telephone = NULL, $adresse = NULL,  $mail = NULL) {
         if (!is_null($login) && !is_null($nom) && !is_null($prenom) && !is_null($ville) && !is_null($mail) && !is_null($adresse) && !is_null($telephone)) {
             $this->login = $login;
-            $this->nomV = $nom;
-            $this->prenomV = $prenom;
+            $this->nom = $nom;
+            $this->prenom = $prenom;
             $this->ville = $ville;
             $this->telephone= $telephone;
             $this->adresse = $adresse;
-            $this->mailV = $mailV;
+            $this->mail = $mail;
         }
     }
 
@@ -85,5 +85,34 @@ class ModelVeterinaire extends Model {
     public function setTelephone($nouveauTelephone) {
         $this->telephone = $nouveauTelephone;
     }
+    
+    public function save() {
+        $sql = "INSERT INTO veterinaire (`login`, `nomV`, `prenomV`, `ville`, `telephone`, `adresse`, `mailV`)
+                VALUES (:login, :nom, :prenom, :ville, :telephone, :adresse, :mail)";
+
+        try {
+            $rep_prep = Model::$pdo->prepare($sql);
+        } catch (PDOException $e) {
+            if (Conf::getDebug()) {
+                echo $e->getMessage();
+            } else {
+                echo 'Une erreur est survenue (PDO)';
+            }
+            die();
+        }
+
+        $values = array(
+            "login" => $this->login,
+            "nom" => $this->nom,
+            "prenom" => $this->prenom,
+            "telephone" => $this->telephone,
+            "ville" => $this->ville,
+            "adresse" => $this->adresse,
+            "mail" => $this->mail);
+        
+
+        $rep_prep->execute($values);
+    }
+
 
 }

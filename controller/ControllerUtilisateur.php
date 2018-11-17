@@ -24,4 +24,18 @@ class ControllerUtilisateur {
             require (File::build_path(array("view", "view.php")));
         }
     }
+    
+    public static function create() {
+        $view = 'create';
+        $pagetitle = 'Rejoignez-nouus !';
+        require (File::build_path(array("view", "view.php")));  //redirige vers la vue
+    }
+    
+    public static function created($login, $nom, $prenom, $ville, $adresse, $mail) {
+        $view = 'created';
+        $pagetitle = 'Inscription réussie !';
+        $u = new ModelUtilisateur($login, $nom, $prenom, $ville, $adresse, $mail);
+        $u->save();
+        require (File::build_path(array("view", "view.php")));
+    }
 }
