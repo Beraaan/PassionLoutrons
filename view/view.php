@@ -13,6 +13,7 @@
         <li><a href="index.php"><strong>Nos produiiiiits</strong></a></li>
         <li> <a href="index.php?controller=utilisateur"><strong>Les zutzuts</strong></a></li>
         <li> <a href="index.php?controller=veterinaire"><strong>Les vetoooos</strong></a></li>
+        <li> <a href="index.php?controller=utilisateur&action=create"><strong>Veneeeezzz !</strong></a></li>
     </ul>
 
     <!--</p>-->

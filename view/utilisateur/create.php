@@ -44,3 +44,5 @@
     </fieldset> 
             
  </form>
+
+<a href="index.php?controller=veterinaire&action=create">Vous êtes vétérinaire ? Inscrivez-vous ici !</a>
