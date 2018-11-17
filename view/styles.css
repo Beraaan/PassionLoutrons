@@ -1,0 +1,50 @@
+    body {
+                color: white;
+                height: 100%;
+                background-color: #33001a;
+                background-image: linear-gradient(to bottom right, #33001a, #cc0066);
+                background-size: 100% 400%;
+            }    
+
+            footer {
+                /*background-color: black;*/
+                position: fixed;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+            }
+
+            h1 {
+                color: #99e6ff;
+                text-decoration: underline;
+            }
+
+            strong {
+                color: #ffcc33;
+            }
+
+            strong:hover {
+                color: #ffecb3;
+                text-decoration: underline;
+            }
+
+            a {
+                color: #ffcccc;
+                text-decoration: none;
+                font-weight: bolder;
+            }
+
+            a:hover{
+                color: #ff9999;
+                text-decoration: underline;
+            }
+
+            #menu {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            #menu > li {
+                display: inline;
+            }
