@@ -3,10 +3,10 @@
 class Conf {
 
     static private $databases = array(
-        'hostname' => 'localhost',
-        'database' => 'passionloutrons',
-        'login' => 'berangere',
-        'password' => 'berangere',
+        'hostname' => 'webinfo.iutmontp.univ-montp2.fr',
+        'database' => 'belluccib',
+        'login' => 'belluccib',
+        'password' => '1110028870V',
     );
     static private $debug = True;
 
