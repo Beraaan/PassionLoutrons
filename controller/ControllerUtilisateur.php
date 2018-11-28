@@ -15,7 +15,7 @@ class ControllerUtilisateur {
     }
 
     public static function read($primary) {
-        $view = 'detail';
+        $view = 'profil';
         $pagetitle = 'Ce zutzut !';
         $u = ModelUtilisateur::select($primary);
         if (empty($u))
@@ -37,5 +37,34 @@ class ControllerUtilisateur {
         $u = new ModelUtilisateur($login, $nom, $prenom, $ville, $adresse, $mail);
         $u->save();
         require (File::build_path(array("view", "view.php")));
+    }
+    
+    public static function update($login) {
+        $view = 'update';
+        $pagetitle = 'Changer utilisateur !';
+        $v = ModelUtilisateur::getUtilisateurByLogin($login);
+        require (File::build_path(array("view", "view.php"))); 
+    }
+    
+    public static function updated() {
+        $view = 'updated';
+        $pagetitle = 'Yeesss CONGRATS';
+        $data = array(
+            "login" => $_GET['login'],
+            "nom" => $_GET['nom'],
+            "prenon" => $_GET['prenom'],
+            "ville" => $_GET['ville'],
+            "adresse" => $_GET['adresse'],
+            "mail" => $_GET['mail'],
+        );
+        ModelUtilisateur::update($data);
+        $tab_v = ModelUtilisateur::selectAll();
+        require File::build_path(array("view", "view.php"));
+    }
+    
+    public static function error() {
+        $view = 'error';
+        $pagetitle = 'Flute !';
+        require(File::build_path(array('view', 'view.php')));
     }
 }
