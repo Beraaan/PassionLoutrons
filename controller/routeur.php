@@ -62,19 +62,20 @@ else {
                 $controller_class::$action($login, $nom, $prenom, $adresse, $ville, $mail, $tel);
             }
         }
+        
+        if($action == "update") {
+            $login = $_GET['login'];
+            $controller_class::$action($login); // Appel de la méthode statique $action 
+        }
+
+        if($action == "updated") {
+            $controller_class::$action(); // Appel de la méthode statique $action 
+        }
+        
 //
 //        if($action == "delete") {
 //            $immat = $_GET['immat'];
 //            ControllerVoiture::$action($immat); // Appel de la méthode statique $action de ControllerVoiture
-//        }
-//
-//        if($action == "update") {
-//            $immat = $_GET['immat'];
-//            ControllerVoiture::$action($immat); // Appel de la méthode statique $action de ControllerVoiture
-//        }
-//
-//        if($action == "updated") {
-//            ControllerVoiture::$action(); // Appel de la méthode statique $action de ControllerVoiture
 //        }
 //        
     }
