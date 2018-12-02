@@ -82,6 +82,9 @@ else {
             $controller_class::$action();
         }
         
+        if ($action == 'deconnect') {
+            $controller_class::$action();
+        }
 //
 //        if($action == "delete") {
 //            $immat = $_GET['immat'];

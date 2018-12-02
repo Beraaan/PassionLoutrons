@@ -81,7 +81,7 @@ class ControllerUtilisateur {
         if (ModelUtilisateur::checkPassword($_GET['login'], $mdp_chiffre)) {
             $view = 'connected';
             $pagetitle = 'Connecté !';
-            $_SESSION['login'] = $login;
+            $_SESSION['login'] = $_GET['login'];
             require (File::build_path(array("view", "view.php")));  
         }
         else {
@@ -90,5 +90,12 @@ class ControllerUtilisateur {
             echo 'Connexion échouée';
             require (File::build_path(array("view", "view.php")));  
         }   
+    }
+    
+    public static function deconnect() {
+        $view = 'deconnect';
+        $pagetitle = 'Au revoooaaar';
+        $_SESSION['LAST_ACTIVITY'] = 0;
+        require(File::build_path(array("view", "view.php")));
     }
 }

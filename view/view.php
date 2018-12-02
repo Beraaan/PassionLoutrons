@@ -15,8 +15,9 @@
         <li> <a href="index.php?controller=veterinaire"><strong>Les vetoooos</strong></a></li>
         <li> <a href="index.php?controller=utilisateur&action=create"><strong>Veneeeezzz !</strong></a></li>
         <?php 
-            if (isset($_SESSION['connecte']) && $_SESSION['connecte'] == true) {
-                echo '<li> <strong>Bienvenue !</strong></a></li>';
+            if (isset($_SESSION['login'])) {
+                echo '<li><strong>Bienvenue '.$_SESSION['login'].' !</strong></li>';
+                echo '<li> <a href="index.php?controller=utilisateur&action=deconnect"><strong>Se déconnecter</strong></a></li>';
             }
             else {
                 echo '<li> <a href="index.php?controller=utilisateur&action=connect"><strong>Se connecter !</strong></a></li>';

@@ -163,10 +163,7 @@ class ModelUtilisateur extends Model {
     }
     
     public static function checkPassword($login,$mot_de_passe_chiffre) {
-        $sql = "SELECT COUNT(*)"
-                . " FROM utilisateur "
-                . "WHERE login=:login_tag"
-                . " AND password = :password_tag";
+        $sql = "SELECT COUNT(*) FROM `utilisateur` WHERE login=:login_tag AND password = :password_tag";
                     
         try {
             $req_prep = Model::$pdo->prepare($sql);
@@ -188,7 +185,7 @@ class ModelUtilisateur extends Model {
 
         $nb = $req_prep->fetchAll();
   
-        if ($nb == 1)
+        if ($nb[0][0] == '1')
             return true;
         return false;
     }
