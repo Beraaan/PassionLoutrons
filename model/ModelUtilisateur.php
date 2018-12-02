@@ -106,10 +106,10 @@ class ModelUtilisateur extends Model {
     }
     
     public static function update($data) {
-        $sql = "UPDATE utilisateur SET nom=:nom, prenom=:prenom, ville=:ville, adresse=:adresse, mail=:mail WHERE login=:login";
+        $sql = "UPDATE `utilisateur` SET `nomUtilisateur`=:nom, `prenomUtilisateur`=:prenom, `villeU`=:ville, `adresse`=:adresse, `mailU`=:mail WHERE login=:login";
 
         try {
-            $rep_prep = Model::$pdo->prepare($sql);
+            $req_prep = Model::$pdo->prepare($sql);
         } catch (PDOException $e) {
             if (Conf::getDebug()) {
                 echo $e->getMessage();
@@ -122,13 +122,13 @@ class ModelUtilisateur extends Model {
         $values = array(
             "login" => $data['login'],
             "nom" => $data['nom'],
-            "prenon" => $data['prenom'],
+            "prenom" => $data['prenom'],
             "ville" => $data['ville'],
             "adresse" => $data['adresse'],
-            "mail" => $data['mail'],
+            "mail" => $data['mail']
         );
 
-        $rep_prep->execute($values);
+        $req_prep->execute($values);
     }
     
     public static function getUtilisateurByLogin($login) {

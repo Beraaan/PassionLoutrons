@@ -5,6 +5,7 @@
         <legend>Modifier un utilisateur :</legend>
         <p>
             <input type='hidden' name='action' value='updated'>
+            <input type='hidden' name='controller' value='utilisateur'>
         </p>
         
         <p>

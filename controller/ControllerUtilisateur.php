@@ -54,13 +54,13 @@ class ControllerUtilisateur {
         $data = array(
             "login" => $_GET['login'],
             "nom" => $_GET['nom'],
-            "prenon" => $_GET['prenom'],
+            "prenom" => $_GET['prenom'],
             "ville" => $_GET['ville'],
             "adresse" => $_GET['adresse'],
             "mail" => $_GET['mail'],
         );
         ModelUtilisateur::update($data);
-        // $tab_u = ModelUtilisateur::selectAll();
+        $tab_u = ModelUtilisateur::selectAll();
         require File::build_path(array("view", "view.php"));
     }
     
