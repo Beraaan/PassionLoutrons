@@ -14,6 +14,11 @@
         </p>
         
         <p>
+          <label for="password">Mon mot de passe</label> :
+          <input type="password" name="password" id="password" required/>
+        </p>
+        
+        <p>
           <label for="nom">Mon nom</label> :
           <input type="text" name="nom" id="nom" required/>
         </p>

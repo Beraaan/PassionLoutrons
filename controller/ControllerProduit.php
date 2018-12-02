@@ -27,4 +27,8 @@ class ControllerProduit {
         $pagetitle = 'Flute !';
         require(File::build_path(array('view', 'view.php')));
     }
+    
+    
+    
+    
 }

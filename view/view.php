@@ -14,6 +14,14 @@
         <li> <a href="index.php?controller=utilisateur"><strong>Les zutzuts</strong></a></li>
         <li> <a href="index.php?controller=veterinaire"><strong>Les vetoooos</strong></a></li>
         <li> <a href="index.php?controller=utilisateur&action=create"><strong>Veneeeezzz !</strong></a></li>
+        <?php 
+            if (isset($_SESSION['connecte']) && $_SESSION['connecte'] == true) {
+                echo '<li> <strong>Bienvenue !</strong></a></li>';
+            }
+            else {
+                echo '<li> <a href="index.php?controller=utilisateur&action=connect"><strong>Se connecter !</strong></a></li>';
+            }
+        ?>
     </ul>
 
     <!--</p>-->

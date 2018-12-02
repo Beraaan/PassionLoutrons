@@ -113,6 +113,64 @@ class ModelVeterinaire extends Model {
 
         $rep_prep->execute($values);
     }
+    
+    public static function update($data) {
+        $sql = "UPDATE `veterinaire` SET `nom`=:nom,`prenom`=:prenom, `telephone`=:telephone, `ville`=:ville, `adresse`=:adresse, `mail`=:mail WHERE login = :login";
+
+        try {
+            $rep_prep = Model::$pdo->prepare($sql);
+        } catch (PDOException $e) {
+            if (Conf::getDebug()) {
+                echo $e->getMessage();
+            } else {
+                echo 'Une erreur est survenue (PDO)';
+            }
+            die();
+        }
+
+        $values = array(
+            "login" => $data['login'],
+            "nom" => $data['nom'],
+            "prenon" => $data['prenom'],
+            "ville" => $data['ville'],
+            "adresse" => $data['adresse'],
+            "mail" => $data['mail'],
+            "telephone" => $data['telephone'],
+        );
+
+        $rep_prep->execute($values);
+    }
+    
+    public static function getVeterinaireByLogin($login) {
+        $sql = "SELECT * FROM veterinaire WHERE login=:nom_tag";
+        // Préparation de la requête
+
+        try {
+            $req_prep = Model::$pdo->prepare($sql);
+        } catch (PDOException $e) {
+            if (Conf::getDebug()) {
+                echo $e->getMessage();
+            } else {
+                echo 'Une erreur est survenue (PDO)';
+            }
+            die();
+        }
+
+        $values = array(
+            "nom_tag" => $login,
+                //nomdutag => valeur, ...
+        );
+        // On donne les valeurs et on exécute la requête	 
+        $req_prep->execute($values);
+
+        // On récupère les résultats comme précédemment
+        $req_prep->setFetchMode(PDO::FETCH_CLASS, 'ModelVeterinaire');
+        $tab_veto = $req_prep->fetchAll();
+        // Attention, si il n'y a pas de r�sultats, on renvoie false
+        if (empty($tab_veto))
+            return false;
+        return $tab_veto[0];
+    }
 
 
 }
