@@ -3,5 +3,5 @@
         $u->getMail() . '<br>D\'où je viens : ' . $u->getVille() . '</li><br>';
 //    echo '<p><a href="http://localhost/TD6/index.php?action=delete&immat=' . rawurldecode($immat) . '">Poubelle</a></p>';
    
-    echo '<p><a href="http://localhost/PassionLoutrons/index.php?action=update&login=' . rawurldecode($u->getLogin()) . '">Modifier</a></p>';
+    echo '<p><a href="http://localhost/PassionLoutrons/index.php?controller=utilisateur&action=update&login=' . rawurldecode($u->getLogin()) . '">Modifier</a></p>';
 ?>

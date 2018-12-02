@@ -8,33 +8,33 @@
         </p>
         
         <p>
-          <label for="imm">Login</label> :
-          <input type="text" value=<?php echo htmlspecialchars($v->getLogin())?> name="login" id="login" readonly/>
+          <label for="login">Login</label> :
+          <input type="text" value=<?php echo htmlspecialchars($u->getLogin())?> name="login" id="login" readonly/>
         </p>
         
          <p>
-          <label for="marque">Nom</label> :
-          <input type="text" value=<?php echo htmlspecialchars($v->getNom())?> name="nom" id="nom" required/>
+          <label for="nom">Nom</label> :
+          <input type="text" value=<?php echo htmlspecialchars($u->getNom())?> name="nom" id="nom" required/>
         </p>
         
          <p>
-          <label for="couleur">Prenom</label> :
-          <input type="text" value=<?php echo htmlspecialchars($v->getPrenom())?> name="prenom" id="prenom" required/>
+          <label for="prenom">Prenom</label> :
+          <input type="text" value=<?php echo htmlspecialchars($u->getPrenom())?> name="prenom" id="prenom" required/>
         </p>
         
         <p>
-          <label for="couleur">Ville</label> :
-          <input type="text" value=<?php echo htmlspecialchars($v->getVille())?> name="ville" id="ville" required/>
+          <label for="ville">Ville</label> :
+          <input type="text" value=<?php echo htmlspecialchars($u->getVille())?> name="ville" id="ville" required/>
         </p>
         
         <p>
-          <label for="couleur">Adresse</label> :
-          <input type="text" value=<?php echo htmlspecialchars($v->getAdresse())?> name="adresse" id="adresse" required/>
+          <label for="adresse">Adresse</label> :
+          <input type="text" value=<?php echo htmlspecialchars($u->getAdresse())?> name="adresse" id="adresse" required/>
         </p>
         
         <p>
-          <label for="couleur">Mail</label> :
-          <input type="text" value=<?php echo htmlspecialchars($v->getMail())?> name="mail" id="mail" required/>
+          <label for="mail">Mail</label> :
+          <input type="text" value=<?php echo htmlspecialchars($u->getMail())?> name="mail" id="mail" required/>
         </p>
         
         <p>

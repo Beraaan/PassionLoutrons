@@ -4,6 +4,7 @@
 require_once File::build_path(array("controller", "ControllerProduit.php"));
 require_once File::build_path(array("controller", "ControllerUtilisateur.php"));
 require_once File::build_path(array("controller", "ControllerVeterinaire.php"));
+require_once File::build_path(array("lib", "Security.php"));
 
 if (isset($_GET['controller']))
     $controller = $_GET['controller'];
@@ -43,12 +44,13 @@ else {
             
             if ($controller == "utilisateur") {
                 $login = $_GET['login'];
+                $password = $_GET['password'];
                 $nom = $_GET['nom'];
                 $prenom = $_GET['prenom'];
                 $adresse = $_GET['adresse'];
                 $ville = $_GET['ville'];
                 $mail = $_GET['mail'];
-                $controller_class::$action($login, $nom, $prenom, $ville, $adresse, $mail);
+                $controller_class::$action($login, $password, $nom, $prenom, $ville, $adresse, $mail);
             } 
             
             else if ($controller == "veterinaire") {
@@ -70,6 +72,14 @@ else {
 
         if($action == "updated") {
             $controller_class::$action(); // Appel de la méthode statique $action 
+        }
+        
+        if ($action == 'connect') {
+            $controller_class::$action();
+        }
+        
+        if ($action == 'connected') {
+            $controller_class::$action();
         }
         
 //

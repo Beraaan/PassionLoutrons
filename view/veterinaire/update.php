@@ -8,37 +8,37 @@
         </p>
         
         <p>
-          <label for="imm">Login</label> :
+          <label for="login">Login</label> :
           <input type="text" value=<?php echo htmlspecialchars($v->getLogin())?> name="login" id="login" readonly/>
         </p>
         
          <p>
-          <label for="marque">Nom</label> :
+          <label for="nom">Nom</label> :
           <input type="text" value=<?php echo htmlspecialchars($v->getNom())?> name="nom" id="nom" required/>
         </p>
         
          <p>
-          <label for="couleur">Prenom</label> :
+          <label for="prenom">Prenom</label> :
           <input type="text" value=<?php echo htmlspecialchars($v->getPrenom())?> name="prenom" id="prenom" required/>
         </p>
         
         <p>
-          <label for="couleur">Ville</label> :
+          <label for="ville">Ville</label> :
           <input type="text" value=<?php echo htmlspecialchars($v->getVille())?> name="ville" id="ville" required/>
         </p>
         
         <p>
-          <label for="couleur">Adresse</label> :
+          <label for="adresse">Adresse</label> :
           <input type="text" value=<?php echo htmlspecialchars($v->getAdresse())?> name="adresse" id="adresse" required/>
         </p>
         
         <p>
-          <label for="couleur">Mail</label> :
+          <label for="mail">Mail</label> :
           <input type="text" value=<?php echo htmlspecialchars($v->getMail())?> name="mail" id="mail" required/>
         </p>
         
         <p>
-          <label for="couleur">Telephone</label> :
+          <label for="telephone">Telephone</label> :
           <input type="text" value=<?php echo htmlspecialchars($v->getTelephone())?> name="telephone" id="telephone" required/>
         </p>
         
