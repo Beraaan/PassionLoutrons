@@ -106,7 +106,7 @@ class ModelUtilisateur extends Model {
     }
     
     public static function update($data) {
-        $sql = "UPDATE `utilisateur` SET `nomUtilisateur`=:nom, `prenomUtilisateur`=:prenom, `villeU`=:ville, `adresse`=:adresse, `mailU`=:mail WHERE login=:login";
+        $sql = "UPDATE `utilisateur` SET `admin`=:admin `nomUtilisateur`=:nom, `prenomUtilisateur`=:prenom, `villeU`=:ville, `adresse`=:adresse, `mailU`=:mail WHERE login=:login";
 
         try {
             $req_prep = Model::$pdo->prepare($sql);
@@ -118,8 +118,15 @@ class ModelUtilisateur extends Model {
             }
             die();
         }
+        
+        $estAdmin = $data['admin'];
+        if ($estAdmin = 'estAdmin') {
+            $estAdmin = 1;
+        }
+        else $estAdmin = 0;
 
         $values = array(
+            "admin" => $estAdmin,
             "login" => $data['login'],
             "nom" => $data['nom'],
             "prenom" => $data['prenom'],
@@ -189,5 +196,50 @@ class ModelUtilisateur extends Model {
             return true;
         return false;
     }
+    
+    public static function checkAdmin($login) {
+        $sql = "SELECT admin FROM `utilisateur` WHERE login=:login_tag";
+        
+         try {
+            $req_prep = Model::$pdo->prepare($sql);
+        } catch (PDOException $e) {
+            if (Conf::getDebug()) {
+                echo $e->getMessage();
+            } else {
+                echo 'Une erreur est survenue (PDO)';
+            }
+            die();
+        }
+                
+        $values = array(
+            "login_tag" => $login,
+        );
+        
+        $req_prep->execute($values);
 
+        $nb = $req_prep->fetchAll();
+  
+        if ($nb[0][0] == '1')
+            return true;
+        return false;
+    }
+
+    public static function delete($login) {
+        $sql = "DELETE FROM utilisateur WHERE login=:tag_login";
+        try {       
+        // Préparation de la requête
+        $req_prep = Model::$pdo->prepare($sql);
+        } catch (PDOException $e) {
+            if (Conf::getDebug()) {
+                echo $e->getMessage(); // affiche un message d'erreur
+            } else {
+                echo 'Une erreur est survenue <a href=""> retour a la page d\'accueil </a>';
+            }
+            die();
+        }
+        $values = array(
+            "tag_login" => $login
+        );
+        $req_prep->execute($values);
+    }
 }

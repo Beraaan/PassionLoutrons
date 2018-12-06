@@ -74,28 +74,6 @@ class Model {
             return false;}
         return $tab_res[0];
     }
-    
-    public static function create() {
-        $sql = "INSERT INTO voiture (`immatriculation`, `marque`, `couleur`) VALUES (:imm, :mar, :coul)";
-
-        try {
-            $rep_prep = Model::$pdo->prepare($sql);
-        } catch (PDOException $e) {
-            if (Conf::getDebug()) {
-                echo $e->getMessage();
-            } else {
-                echo 'Une erreur est survenue (PDO)';
-            }
-            die();
-        }
-
-        $values = array(
-            "imm" => $this->immatriculation,
-            "mar" => $this->marque,
-            "coul" => $this->couleur);
-
-        $rep_prep->execute($values);
-    }
 
 }
 

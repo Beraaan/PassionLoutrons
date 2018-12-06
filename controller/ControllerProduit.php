@@ -28,7 +28,37 @@ class ControllerProduit {
         require(File::build_path(array('view', 'view.php')));
     }
     
+    // EN COURS
+     public static function update($id) {
+        if (Session::is_admin()) {
+            $view = 'update';
+            $pagetitle = 'Modifier ce produit !';
+            $p = ModelProduit::getProduitById($id);
+             require (File::build_path(array("view", "view.php"))); 
+        }
+        else {
+            self::connect();
+        }    
+    }
     
+    public static function updated() {
+        if (Session::is_admin()) {
+            $view = 'updated';
+            $pagetitle = 'Produit mis à jour !';
+            $data = array(
+                "idProduit" => $_GET['pkey'],
+                "nom" => $_GET['nom'],
+                "prix" => $_GET['prix'],
+                "nbDispo" => $_GET['nbDispo']
+            );
+            ModelProduit::update($data);
+            //$tab_u = ModelProduit::selectAll();
+            require File::build_path(array("view", "view.php"));
+        }
+        else {
+            self::connect();
+        }    
+    }
     
     
 }

@@ -3,6 +3,7 @@
 //require_once '/../lib/File.php';
 require_once File::build_path(array("model", "ModelUtilisateur.php")); // chargement du modèle
 require_once File::build_path(array("lib", "Security.php"));
+require_once File::build_path(array("lib", "Session.php"));
 
 class ControllerUtilisateur {
 
@@ -42,26 +43,49 @@ class ControllerUtilisateur {
     }
     
     public static function update($login) {
-        $view = 'update';
-        $pagetitle = 'Changer utilisateur !';
-        $u = ModelUtilisateur::getUtilisateurByLogin($login);
-        require (File::build_path(array("view", "view.php"))); 
+        if (Session::is_user($login) || Session::is_admin()) {
+            $view = 'update';
+            $pagetitle = 'Changer utilisateur !';
+            $u = ModelUtilisateur::getUtilisateurByLogin($login);
+             require (File::build_path(array("view", "view.php"))); 
+        }
+        else {
+            self::connect();
+        }    
     }
     
     public static function updated() {
-        $view = 'updated';
-        $pagetitle = 'Yeesss CONGRATS';
-        $data = array(
-            "login" => $_GET['login'],
-            "nom" => $_GET['nom'],
-            "prenom" => $_GET['prenom'],
-            "ville" => $_GET['ville'],
-            "adresse" => $_GET['adresse'],
-            "mail" => $_GET['mail'],
-        );
-        ModelUtilisateur::update($data);
-        $tab_u = ModelUtilisateur::selectAll();
-        require File::build_path(array("view", "view.php"));
+        if (Session::is_user($_GET['pkey']) || Session::is_admin()) {
+            $view = 'updated';
+            $pagetitle = 'Yeesss CONGRATS';
+            $data = array(
+                "admin" => $_GET['admin'],
+                "login" => $_GET['pkey'],
+                "nom" => $_GET['nom'],
+                "prenom" => $_GET['prenom'],
+                "ville" => $_GET['ville'],
+                "adresse" => $_GET['adresse'],
+                "mail" => $_GET['mail'],
+            );
+            ModelUtilisateur::update($data);
+           //$tab_u = ModelUtilisateur::selectAll();
+            require File::build_path(array("view", "view.php"));
+        }
+        else {
+            self::connect();
+        }    
+    }
+    
+    public static function delete($login) {
+        if (Session::is_user($_GET['login']) || Session::is_admin()) {
+            ModelUtilisateur::delete($login);
+            $view = 'deleted';
+            $pagetitle='Utilisateur supprimé';
+            require File::build_path(array("view", "view.php")); 
+        }
+        else {
+            self::connect();
+        }
     }
     
     public static function error() {
@@ -82,6 +106,10 @@ class ControllerUtilisateur {
             $view = 'connected';
             $pagetitle = 'Connecté !';
             $_SESSION['login'] = $_GET['login'];
+            if (ModelUtilisateur::checkAdmin($_SESSION['login'])) {
+                $_SESSION['admin'] = true;
+            }
+            else $_SESSION['admin'] = false;
             require (File::build_path(array("view", "view.php")));  
         }
         else {

@@ -1,3 +1,6 @@
+<?php
+    require_once File::build_path(array("lib", "Session.php"));
+?>
 <!DOCTYPE! html>
 
  <form method="get" action="index.php">
@@ -9,8 +12,8 @@
         </p>
         
         <p>
-          <label for="login">Login</label> :
-          <input type="text" value=<?php echo htmlspecialchars($u->getLogin())?> name="login" id="login" readonly/>
+          <label for="pkey">Login</label> :
+          <input type="text" value=<?php echo htmlspecialchars($u->getLogin())?> name="pkey" id="pkey" readonly/>
         </p>
         
          <p>
@@ -37,6 +40,18 @@
           <label for="mail">Mail</label> :
           <input type="text" value=<?php echo htmlspecialchars($u->getMail())?> name="mail" id="mail" required/>
         </p>
+        
+        <?php 
+            if (Session::is_admin()) {
+                echo '<p>
+                  <label for="admin">Administrateur ?</label>
+                  <input type="checkbox" value="estAdmin" name="admin" id="admin"'; 
+                if (ModelUtilisateur::checkAdmin($u->getLogin())) {
+                    echo 'checked';
+                }
+                echo '/></p>';
+            }
+        ?>
         
         <p>
           <input type="submit" value="Envoyer" />

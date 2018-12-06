@@ -66,12 +66,17 @@ else {
         }
         
         if($action == "update") {
-            $login = $_GET['login'];
-            $controller_class::$action($login); // Appel de la méthode statique $action 
+            $pkey = $_GET['pkey'];
+            $controller_class::$action($pkey); // Appel de la méthode statique $action 
         }
 
         if($action == "updated") {
             $controller_class::$action(); // Appel de la méthode statique $action 
+        }
+        
+        if($action == "delete") {
+            $login = $_GET['login'];
+            $controller_class::$action($login); // Appel de la méthode statique $action 
         }
         
         if ($action == 'connect') {
@@ -84,13 +89,7 @@ else {
         
         if ($action == 'deconnect') {
             $controller_class::$action();
-        }
-//
-//        if($action == "delete") {
-//            $immat = $_GET['immat'];
-//            ControllerVoiture::$action($immat); // Appel de la méthode statique $action de ControllerVoiture
-//        }
-//        
+        } 
     }
 }
 ?>

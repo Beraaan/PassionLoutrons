@@ -42,6 +42,15 @@
           <input type="text" value=<?php echo htmlspecialchars($v->getTelephone())?> name="telephone" id="telephone" required/>
         </p>
         
+        <?php 
+            if (Session::is_admin()) {
+                echo '<p>
+                  <label for="admin">Administrateur ?</label>
+                  <input type="checkbox" value="admin" name="admin" id="admin"/>
+                </p>';
+            }
+        ?>
+        
         <p>
           <input type="submit" value="Envoyer" />
         </p>
