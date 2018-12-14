@@ -8,7 +8,7 @@ class Conf {
         'login' => 'belluccib',
         'password' => '1110028870V',
     );
-    static private $debug = True;
+    static private $debug = true;
 
     static public function getDebug() {
         return self::$debug;

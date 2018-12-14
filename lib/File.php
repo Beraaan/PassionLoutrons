@@ -1,6 +1,6 @@
 <?php
 
-require_once '/../controller/routeur.php';
+require_once './controller/routeur.php';
 
 class File {
 

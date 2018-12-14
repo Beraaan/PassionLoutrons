@@ -3,11 +3,21 @@
 //require_once '../lib/File.php';
 require_once File::build_path(array("controller", "ControllerProduit.php"));
 require_once File::build_path(array("controller", "ControllerUtilisateur.php"));
-require_once File::build_path(array("controller", "ControllerVeterinaire.php"));
+require_once File::build_path(array("controller", "ControllerCommande.php"));
 require_once File::build_path(array("lib", "Security.php"));
 
-if (isset($_GET['controller']))
-    $controller = $_GET['controller'];
+function myGet ($nomvar) {
+    if (isset($_GET[$nomvar])) {
+        return $_GET[$nomvar];
+    }
+    if (isset($_POST[$nomvar])) {
+        return $_POST[$nomvar];
+    }
+    return NULL;
+}
+
+if (!is_null(myGet('controller')))
+    $controller = myGet('controller');
 else
     $controller = 'produit';
 
@@ -18,8 +28,8 @@ $controller_class = 'Controller' . ucfirst($controller);
 if (!class_exists($controller_class))
     ControllerProduit::error();
 else {
-    if (isset($_GET['action']))
-        $action = $_GET['action'];
+    if (!is_null(myGet('action')))
+        $action = myGet('action');
     else
         $action = 'readAll';
 
@@ -32,7 +42,7 @@ else {
         }
 
         if ($action == "read") {
-            $data = $_GET['data'];
+            $data = myGet('data');
             $controller_class::$action($data); // Appel de la méthode statique $action du Controller
         }
 
@@ -43,30 +53,37 @@ else {
         if ($action == "created") {
             
             if ($controller == "utilisateur") {
-                $login = $_GET['login'];
-                $password = $_GET['password'];
-                $nom = $_GET['nom'];
-                $prenom = $_GET['prenom'];
-                $adresse = $_GET['adresse'];
-                $ville = $_GET['ville'];
-                $mail = $_GET['mail'];
+                $login = myGet('login');
+                $password = myGet('password');
+                $nom = myGet('nom');
+                $prenom = myGet('prenom');
+                $adresse = myGet('adresse');
+                $ville = myGet('ville');
+                $mail = myGet('mail');
                 $controller_class::$action($login, $password, $nom, $prenom, $ville, $adresse, $mail);
             } 
             
             else if ($controller == "veterinaire") {
-                $login = $_GET['login'];
-                $nom = $_GET['nom'];
-                $prenom = $_GET['prenom'];
-                $adresse = $_GET['adresse'];
-                $ville = $_GET['ville'];
-                $mail = $_GET['mail'];
-                $tel = $_GET['tel'];
+                $login = myGet('login');
+                $nom = myGet('nom');
+                $prenom = myGet('prenom');
+                $adresse = myGet('adresse');
+                $ville = myGet('ville');
+                $mail = myGet('mail');
+                $tel = myGet('tel');
                 $controller_class::$action($login, $nom, $prenom, $adresse, $ville, $mail, $tel);
+            }
+            
+            else if ($controller == "produit") {
+                $nom = myGet('nom');
+                $prix = myGet('prix');
+                $nbdispo = myGet('nbdispo');
+                $controller_class::$action($nom, $prix, $nbdispo);
             }
         }
         
         if($action == "update") {
-            $pkey = $_GET['pkey'];
+            $pkey = myGet('pkey');
             $controller_class::$action($pkey); // Appel de la méthode statique $action 
         }
 
@@ -75,8 +92,9 @@ else {
         }
         
         if($action == "delete") {
-            $login = $_GET['login'];
-            $controller_class::$action($login); // Appel de la méthode statique $action 
+            $pvalue = myGet('pvalue');
+            $pkey = myGet('pkey');
+            $controller_class::$action($pkey, $pvalue); // Appel de la méthode statique $action 
         }
         
         if ($action == 'connect') {
@@ -90,6 +108,29 @@ else {
         if ($action == 'deconnect') {
             $controller_class::$action();
         } 
+        if ($action == 'validate') {
+            $controller_class::$action();
+        }
+        if ($action == 'ajout' || $action == 'enlever') {
+            $pkey = myGet('idProduit');
+            $controller_class::$action($pkey);
+        }
+        if ($action == 'panier') {
+            $controller_class::$action();
+        }       
+        if ($action == 'commander') {
+            $controller_class::$action();
+        }
+        if ($action == 'historique') {
+            $pkey = myGet('login');
+            $controller_class::$action($pkey);
+        }
+        if ($action == 'detailCommande') {
+            $pkey = myGet('login');
+            $id = myGet('idCommande');
+            $controller_class::$action($pkey, $id);
+        }
     }
 }
+
 ?>

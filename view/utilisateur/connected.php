@@ -1,3 +1,3 @@
 <?php
-echo '<h1>Connecté !</h1>
+echo '<h2>Connecté !</h2>
         <p>Content de vous revoir !</p>';

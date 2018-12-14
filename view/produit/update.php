@@ -1,6 +1,7 @@
 <!DOCTYPE! html>
 
- <form method="get" action="index.php">
+ <form method="<?php if (Conf::getDebug()) echo 'get';
+      else echo 'post'; ?>" action="index.php">
     <fieldset>
         <legend>Modifier un produit :</legend>
         <p>

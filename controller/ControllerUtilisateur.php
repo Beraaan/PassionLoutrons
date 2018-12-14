@@ -4,6 +4,7 @@
 require_once File::build_path(array("model", "ModelUtilisateur.php")); // chargement du modèle
 require_once File::build_path(array("lib", "Security.php"));
 require_once File::build_path(array("lib", "Session.php"));
+require_once File::build_path(array("controller", "routeur.php"));
 
 class ControllerUtilisateur {
 
@@ -34,12 +35,27 @@ class ControllerUtilisateur {
     }
     
     public static function created($login, $password, $nom, $prenom, $ville, $adresse, $mail) {
-        $view = 'created';
-        $pagetitle = 'Inscription réussie !';
-        $password_chiffrer = Security::chiffrer($password);
-        $u = new ModelUtilisateur($login, $password_chiffrer, $nom, $prenom, $ville, $adresse, $mail);
-        $u->save();
-        require (File::build_path(array("view", "view.php")));
+        if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+            echo 'Mail invalide';
+            self::create();
+        }
+        else {
+            if (ModelUtilisateur::getUtilisateurByLogin($login)) {
+                echo 'Le login est déjà pris.';
+                self::create();
+            }
+            else {
+                $view = 'created';
+                $pagetitle = 'Inscription réussie !';
+                $password_chiffrer = Security::chiffrer($password);
+                $nonce = Security::generateRandomHex();
+                $u = new ModelUtilisateur($login, $password_chiffrer, $nom, $prenom, $ville, $adresse, $mail, $nonce);
+                $u->save();
+                $mail_message = 'Bonjour, voici le lien d\'activation: http://webinfo.iutmontp.univ-montp2.fr/~laisnev/PassionLoutrons/index.php?controller=utilisateur&action=validate&login='.rawurlencode($u->getLogin()).'&nonce='.rawurlencode($u->getNonce());
+                mail($mail, "Passion Loutrons", $mail_message);
+                require (File::build_path(array("view", "view.php")));
+            }
+        }
     }
     
     public static function update($login) {
@@ -55,32 +71,42 @@ class ControllerUtilisateur {
     }
     
     public static function updated() {
-        if (Session::is_user($_GET['pkey']) || Session::is_admin()) {
+        if (Session::is_user(myGet('pkey')) || Session::is_admin()) {
             $view = 'updated';
             $pagetitle = 'Yeesss CONGRATS';
+
             $data = array(
-                "admin" => $_GET['admin'],
-                "login" => $_GET['pkey'],
-                "nom" => $_GET['nom'],
-                "prenom" => $_GET['prenom'],
-                "ville" => $_GET['ville'],
-                "adresse" => $_GET['adresse'],
-                "mail" => $_GET['mail'],
-            );
-            ModelUtilisateur::update($data);
-           //$tab_u = ModelUtilisateur::selectAll();
-            require File::build_path(array("view", "view.php"));
+                "login" => myGet('pkey'),
+                "nom" => myGet('nom'),
+                "prenom" => myGet('prenom'),
+                "ville" => myGet('ville'),
+                "adresse" => myGet('adresse'),
+                "mail" => myGet('mail'),
+                );
+            
+                if (!is_null(myGet('admin'))) {
+                    $data['admin'] = myGet('admin');
+                }
+            
+                ModelUtilisateur::update($data);
+                $tab_u = ModelUtilisateur::selectAll();
+                require File::build_path(array("view", "view.php"));
         }
         else {
             self::connect();
         }    
     }
     
-    public static function delete($login) {
-        if (Session::is_user($_GET['login']) || Session::is_admin()) {
-            ModelUtilisateur::delete($login);
+    public static function delete($pkey, $pvalue) {
+        if (Session::is_user(myGet('pvalue')) || Session::is_admin()) {
+            Model::delete(self::$object, $pkey, $pvalue);
             $view = 'deleted';
             $pagetitle='Utilisateur supprimé';
+            if (Session::is_user(myGet('pvalue'))) {
+                session_unset();     // unset $_SESSION variable for the run-time 
+                session_destroy();   // destroy session data in storage
+                setcookie(session_name(),'',time()-1);
+            }
             require File::build_path(array("view", "view.php")); 
         }
         else {
@@ -101,29 +127,59 @@ class ControllerUtilisateur {
     }
     
     public static function connected() {    
-        $mdp_chiffre = Security::chiffrer($_GET['password']);
-        if (ModelUtilisateur::checkPassword($_GET['login'], $mdp_chiffre)) {
-            $view = 'connected';
-            $pagetitle = 'Connecté !';
-            $_SESSION['login'] = $_GET['login'];
-            if (ModelUtilisateur::checkAdmin($_SESSION['login'])) {
-                $_SESSION['admin'] = true;
+        $mdp_chiffre = Security::chiffrer(myGet('password'));
+        if (ModelUtilisateur::checkPassword(myGet('login'), $mdp_chiffre)) {
+            if (ModelUtilisateur::nonceIsNull(myGet('login'))) {
+                $view = 'connected';
+                $pagetitle = 'Connecté !';
+                $_SESSION['login'] = myGet('login');
+                if (ModelUtilisateur::checkAdmin($_SESSION['login'])) {
+                    $_SESSION['admin'] = true;
+                }
+                else $_SESSION['admin'] = false;
+
+                require (File::build_path(array("view", "view.php")));  
             }
-            else $_SESSION['admin'] = false;
-            require (File::build_path(array("view", "view.php")));  
+            else {
+                echo 'Connexion échouée: mail non validé';
+                self::connect();
+            }   
         }
         else {
-            $view = 'connect';
-            $pagetitle = 'Connexion';
-            echo 'Connexion échouée';
-            require (File::build_path(array("view", "view.php")));  
+            echo 'Connexion échouée: mauvais identifiants';
+            self::connect();
         }   
     }
     
     public static function deconnect() {
         $view = 'deconnect';
         $pagetitle = 'Au revoooaaar';
-        $_SESSION['LAST_ACTIVITY'] = 0;
+        session_unset();     // unset $_SESSION variable for the run-time 
+        session_destroy();   // destroy session data in storage
+        setcookie(session_name(),'',time()-1);
         require(File::build_path(array("view", "view.php")));
+    }
+    
+    public static function validate() {
+        $login = myGet('login');
+        $nonce = myGet('nonce');
+        if (!ModelUtilisateur::getUtilisateurByLogin($login)) {
+            $view = 'error';
+            $pagetitle = 'Login invalide';
+            require(File::build_path(array("view", "view.php")));
+        }
+        else {
+            if (ModelUtilisateur::nonceValide($login, $nonce)) {
+                ModelUtilisateur::setNonceNull($login);
+                $view = 'validate';
+                $pagetitle = 'Mail validé !';
+                require(File::build_path(array("view", "view.php")));
+            }
+            else {
+                $view = 'error';
+                $pagetitle = 'Rip';
+                require(File::build_path(array("view", "view.php")));
+            }
+        }    
     }
 }

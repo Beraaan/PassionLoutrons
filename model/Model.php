@@ -1,6 +1,6 @@
 <?php
 
-require_once '/../lib/File.php';
+require_once './lib/File.php';
 require_once File::build_path(array("config", "Conf.php"));
 
 class Model {
@@ -60,7 +60,6 @@ class Model {
 
         $values = array(
             "nom_tag" => $primary_value,
-                //nomdutag => valeur, ...
         );
         // On donne les valeurs et on exécute la requête	 
         $req_prep->execute($values);
@@ -74,7 +73,51 @@ class Model {
             return false;}
         return $tab_res[0];
     }
-
+    
+    public static function delete($table, $pkey, $pvalue) {
+        $sql = "DELETE FROM $table WHERE $pkey=:tag_value";
+        try {       
+        // Préparation de la requête
+        $req_prep = Model::$pdo->prepare($sql);
+        } catch (PDOException $e) {
+            if (Conf::getDebug()) {
+                echo $e->getMessage(); // affiche un message d'erreur
+            } else {
+                echo 'Une erreur est survenue <a href=""> retour a la page d\'accueil </a>';
+            }
+            die();
+        }
+        $values = array(
+            "tag_value" => $pvalue
+        );
+        $req_prep->execute($values);
+    }
+    
+//    public static function update ($data) {
+//        $table_name = static::$object;
+//        $primary_key = static::$primary;
+//        
+//        $sql = "UPDATE $table_name SET ";
+//        foreach ($data as $tuple => $valeur) {
+//            $sql = $sql."$tuple = $valeur";
+//        }
+//        $sql = $sql." WHERE $primary_key = :tag_pkey";
+//        
+//        try {
+//            $req_prep = Model::$pdo->prepare($sql);
+//        } catch (PDOException $e) {
+//            if (Conf::getDebug()) {
+//                echo $e->getMessage(); // affiche un message d'erreur
+//            } else {
+//                echo 'Une erreur est survenue <a href=""> retour a la page d\'accueil </a>';
+//            }
+//            die();
+//        }
+//        $values = array(
+//            "tag_pkey" => $data[$primary_key]
+//        );
+//        $req_prep->execute($values);
+//    }
 }
 
 Model::Init();

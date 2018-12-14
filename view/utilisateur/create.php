@@ -1,6 +1,7 @@
 <!DOCTYPE html>
     
-<form method="get" action="index.php">
+<form method="<?php if (Conf::getDebug()) echo 'get';
+      else echo 'post'; ?>" action="index.php">
     <fieldset>
         <legend>Je m'inscris :</legend>
         <p>
@@ -49,5 +50,3 @@
     </fieldset> 
             
  </form>
-
-<a href="index.php?controller=veterinaire&action=create">Vous êtes vétérinaire ? Inscrivez-vous ici !</a>

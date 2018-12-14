@@ -12,12 +12,13 @@ class ModelUtilisateur extends Model {
     private $mail;
     private $adresse;
     private $password;
+    private $nonce;
     protected static $object = 'utilisateur';
     protected static $primary = 'login';
 
     // Constructeur
-    public function __construct($login = NULL, $password = NULL, $nom = NULL, $prenom = NULL, $ville = NULL, $adresse = NULL, $mail = NULL) {
-        if (!is_null($login) && !is_null($password) && !is_null($nom) && !is_null($prenom) && !is_null($ville) && !is_null($mail) && !is_null($adresse)) {
+    public function __construct($login = NULL, $password = NULL, $nom = NULL, $prenom = NULL, $ville = NULL, $adresse = NULL, $mail = NULL, $nonce = NULL) {
+        if (!is_null($login) && !is_null($password) && !is_null($nom) && !is_null($prenom) && !is_null($ville) && !is_null($mail) && !is_null($adresse) && !is_null($nonce)) {
             $this->login = $login;
             $this->password = $password;
             $this->nom = $nom;
@@ -25,6 +26,7 @@ class ModelUtilisateur extends Model {
             $this->ville = $ville;
             $this->adresse = $adresse;
             $this->mail = $mail;
+            $this->nonce = $nonce;
         }
     }
 
@@ -51,6 +53,10 @@ class ModelUtilisateur extends Model {
 
     public function getAdresse() {
         return $this->adresse;
+    }
+    
+    public function getNonce() {
+        return $this->nonce;
     }
 
     // Setters
@@ -79,8 +85,8 @@ class ModelUtilisateur extends Model {
     }
     
     public function save() {
-        $sql = "INSERT INTO utilisateur (`login`, `password`, `nomUtilisateur`, `prenomUtilisateur`, `villeU`, `adresse`, `mailU`)
-                VALUES (:login, :password, :nom, :prenom, :ville, :adresse, :mail)";
+        $sql = "INSERT INTO utilisateur (`login`, `password`, `nomUtilisateur`, `prenomUtilisateur`, `villeU`, `adresse`, `mailU`, `nonce`)
+                VALUES (:login, :password, :nom, :prenom, :ville, :adresse, :mail, :nonce)";
 
         try {
             $rep_prep = Model::$pdo->prepare($sql);
@@ -100,13 +106,14 @@ class ModelUtilisateur extends Model {
             "prenom" => $this->prenom,
             "ville" => $this->ville,
             "adresse" => $this->adresse,
-            "mail" => $this->mail);
+            "mail" => $this->mail,
+            "nonce" => $this->nonce);
         
         $rep_prep->execute($values);
     }
     
     public static function update($data) {
-        $sql = "UPDATE `utilisateur` SET `admin`=:admin `nomUtilisateur`=:nom, `prenomUtilisateur`=:prenom, `villeU`=:ville, `adresse`=:adresse, `mailU`=:mail WHERE login=:login";
+        $sql = "UPDATE `utilisateur` SET `admin`=:admin, `nomUtilisateur`=:nom, `prenomUtilisateur`=:prenom, `villeU`=:ville, `adresse`=:adresse, `mailU`=:mail WHERE login=:login";
 
         try {
             $req_prep = Model::$pdo->prepare($sql);
@@ -119,11 +126,14 @@ class ModelUtilisateur extends Model {
             die();
         }
         
+        if (isset($data['admin'])) {
         $estAdmin = $data['admin'];
-        if ($estAdmin = 'estAdmin') {
-            $estAdmin = 1;
+            if ($estAdmin == 'estAdmin') {
+                $estAdmin = '1';
+            }
+            else $estAdmin = '0';
         }
-        else $estAdmin = 0;
+        else $estAdmin = '0';
 
         $values = array(
             "admin" => $estAdmin,
@@ -223,23 +233,98 @@ class ModelUtilisateur extends Model {
             return true;
         return false;
     }
-
-    public static function delete($login) {
-        $sql = "DELETE FROM utilisateur WHERE login=:tag_login";
-        try {       
-        // Préparation de la requête
-        $req_prep = Model::$pdo->prepare($sql);
+    
+    public static function nonceIsNull($login) {
+        $sql = "SELECT COUNT(*) FROM `utilisateur` WHERE login=:login_tag AND nonce IS NULL";
+        
+         try {
+            $req_prep = Model::$pdo->prepare($sql);
         } catch (PDOException $e) {
             if (Conf::getDebug()) {
-                echo $e->getMessage(); // affiche un message d'erreur
+                echo $e->getMessage();
             } else {
-                echo 'Une erreur est survenue <a href=""> retour a la page d\'accueil </a>';
+                echo 'Une erreur est survenue (PDO)';
             }
             die();
         }
+                
         $values = array(
-            "tag_login" => $login
+            "login_tag" => $login,
         );
+        
+        $req_prep->execute($values);
+
+        $nb = $req_prep->fetchAll();
+  
+        if ($nb[0][0] == '1')
+            return true;
+        return false;
+    }
+    
+    public static function nonceValide($login, $nonce) {
+        $sql = "SELECT login FROM `utilisateur` WHERE nonce=:nonce_tag";
+        
+         try {
+            $req_prep = Model::$pdo->prepare($sql);
+        } catch (PDOException $e) {
+            if (Conf::getDebug()) {
+                echo $e->getMessage();
+            } else {
+                echo 'Une erreur est survenue (PDO)';
+            }
+            die();
+        }
+                
+        $values = array(
+            "nonce_tag" => $nonce,
+        );
+        
+        $req_prep->execute($values);
+
+        $login_sql = $req_prep->fetchAll();
+  
+        if ($login_sql[0][0] == $login)
+            return true;
+        return false;
+    }
+    
+    public static function setNonceNull($login) {
+        $sql = "UPDATE `utilisateur` SET nonce=NULL WHERE login = :login_tag";
+        
+         try {
+            $req_prep = Model::$pdo->prepare($sql);
+        } catch (PDOException $e) {
+            if (Conf::getDebug()) {
+                echo $e->getMessage();
+            } else {
+                echo 'Une erreur est survenue (PDO)';
+            }
+            die();
+        }
+                
+        $values = array(
+            "login_tag" => $login
+        );
+        
         $req_prep->execute($values);
     }
+
+//    public static function delete($login) {
+//        $sql = "DELETE FROM utilisateur WHERE login=:tag_login";
+//        try {       
+//        // Préparation de la requête
+//        $req_prep = Model::$pdo->prepare($sql);
+//        } catch (PDOException $e) {
+//            if (Conf::getDebug()) {
+//                echo $e->getMessage(); // affiche un message d'erreur
+//            } else {
+//                echo 'Une erreur est survenue <a href=""> retour a la page d\'accueil </a>';
+//            }
+//            die();
+//        }
+//        $values = array(
+//            "tag_login" => $login
+//        );
+//        $req_prep->execute($values);
+//    }
 }

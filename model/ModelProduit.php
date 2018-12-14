@@ -6,16 +6,15 @@ require_once File::build_path(array("model", "Model.php"));
 class ModelProduit extends Model {
 
     private $idProduit;
-    private $nom;
+    private $nomProduit;
     private $prix;
     private $nbDispo;
     protected static $object = 'produit';
     protected static $primary = 'idProduit';
 
     // Constructeur
-    public function __construct($idProduit = NULL, $nomProduit = NULL, $prix = NULL, $nbDispo = NULL) {
-        if (!is_null($idProduit) && !is_null($nom) && !is_null($prix) && !is_null($nbDispo)) {
-            $this->idProduit = $idProduit;
+    public function __construct($nomProduit = NULL, $prix = NULL, $nbDispo = NULL) {
+        if (!is_null($nomProduit) && !is_null($prix) && !is_null($nbDispo)) {
             $this->nomProduit = $nomProduit;
             $this->prix = $prix;
             $this->nbDispo = $nbDispo;
@@ -54,6 +53,29 @@ class ModelProduit extends Model {
 
     public function setVille($nouvelleDispo) {
         $this->nbDispo = $nouvelleDispo;
+    }
+    
+    public function save() {
+        $sql = "INSERT INTO produit (`idProduit`, `nomProduit`, `prix`, `nbDispo`)
+                VALUES (NULL, :nomproduit, :prix, :nbdispo)";
+
+        try {
+            $rep_prep = Model::$pdo->prepare($sql);
+        } catch (PDOException $e) {
+            if (Conf::getDebug()) {
+                echo $e->getMessage();
+            } else {
+                echo 'Une erreur est survenue (PDO)';
+            }
+            die();
+        }
+
+        $values = array(
+            "nomproduit" => $this->nomProduit,
+            "prix" => $this->prix,
+            "nbdispo" => $this->nbDispo);
+        
+        $rep_prep->execute($values);
     }
     
     public static function getProduitById($id) {
@@ -108,5 +130,27 @@ class ModelProduit extends Model {
 
         $req_prep->execute($values);
     }
+    
+    
+
+    
+//    public static function delete($idProduit) {
+//        $sql = "DELETE FROM produit WHERE idProduit=:tag_id";
+//        try {       
+//        // Préparation de la requête
+//        $req_prep = Model::$pdo->prepare($sql);
+//        } catch (PDOException $e) {
+//            if (Conf::getDebug()) {
+//                echo $e->getMessage(); // affiche un message d'erreur
+//            } else {
+//                echo 'Une erreur est survenue <a href=""> retour a la page d\'accueil </a>';
+//            }
+//            die();
+//        }
+//        $values = array(
+//            "tag_id" => $idProduit
+//        );
+//        $req_prep->execute($values);
+//    }
 
 }
